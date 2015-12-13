@@ -14,3 +14,10 @@
 Route::get('/', function () {
     return view('welcome');
 });
+
+
+Route::get('launch/{brid}', 'LaunchController@Launch');
+
+Route::get('recording_result/success/{platform}', 'RecordingResultController@Success');
+
+Route::get('recording_result/fail/{platform}', 'RecordingResultController@Fail');
