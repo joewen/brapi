@@ -7,6 +7,7 @@ class LaunchController extends Controller {
 	public function Launch($brid)
 	{
 		$redis = \App\Cache\CacheManager::GetRedisClient();
-		$redis->incr('launch-' . $brid);
+		$redis->incr('launch');
+		$redis->incr('brid-' . $brid);
 	}
 }
