@@ -13,13 +13,13 @@ class RecordingResultController extends Controller {
 
 	public function Success($platform)
 	{
-		$keyPrefix = "result-$platform-success";
+		$keyPrefix = "result-$platform-s";
 		$this->redis->incr($keyPrefix);
 	}
 
 	public function Fail($platform)
 	{
-		$keyPrefix = "result-$platform-fail";
+		$keyPrefix = "result-$platform-f";
 		$this->redis->incr($keyPrefix);
 	}
 }
