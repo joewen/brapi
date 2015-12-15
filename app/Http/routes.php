@@ -21,3 +21,11 @@ Route::get('launch/{brid}', 'LaunchController@Launch');
 Route::get('recording_result/success/{platform}', 'RecordingResultController@Success');
 
 Route::get('recording_result/fail/{platform}', 'RecordingResultController@Fail');
+
+Route::get('bc/update/{name}/{platform}/{port}', 'BaronClientController@Update');
+
+Route::get('bc/down/{name}/{platform}/{port}', 'BaronClientController@Down');
+
+Route::get('live/byName/{platform}/{name}', 'GameInfoController@GetGameByName');
+
+Route::get('live/bySummonerId/{platform}/{name}', 'GameInfoController@GetGameBySummonerId');
