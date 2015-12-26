@@ -132,8 +132,8 @@ class BaronClientApi {
 			$game->queue_type = $gameDTO->queueTypeName;
 			$game->map_id = $gameDTO->mapId;
 
-			$game->teamOne = $gameDTO->teamOne->array;
-			$game->teamTwo = $gameDTO->teamTwo->array;
+			$game->teamOne = array();
+			$game->teamTwo = array();
 
 			$playerChampionSelectionsIndex = array();
 			foreach ( $gameDTO->playerChampionSelections->array as $value) 
@@ -141,13 +141,24 @@ class BaronClientApi {
 				$playerChampionSelectionsIndex[$value->summonerInternalName] = $value;
 			}
 
-			$playersTeam = array();
 			foreach ( $gameDTO->teamOne->array as $value) {
-				$value->playerChampionSelection = $playerChampionSelectionsIndex[$value->summonerInternalName];
+				$player = $playerChampionSelectionsIndex[$value->summonerInternalName];
+				$player->accountId = $value->accountId;
+				$player->summonerId = $value->summonerId;
+				$player->profileIconId = $value->profileIconId;
+				$player->index = $value->index;
+				$player->summonerName = $value->summonerName;
+				array_push($game->teamOne,  $playerChampionSelectionsIndex[$value->summonerInternalName]);
 			}
 
 			foreach ( $gameDTO->teamTwo->array as $value) {
-				$value->playerChampionSelection = $playerChampionSelectionsIndex[$value->summonerInternalName];
+				$player = $playerChampionSelectionsIndex[$value->summonerInternalName];
+				$player->accountId = $value->accountId;
+				$player->summonerId = $value->summonerId;
+				$player->profileIconId = $value->profileIconId;
+				$player->index = $value->index;
+				$player->summonerName = $value->summonerName;
+				array_push($game->teamTwo,  $playerChampionSelectionsIndex[$value->summonerInternalName]);
 			}
 
 			$game->teamOneBans = array();

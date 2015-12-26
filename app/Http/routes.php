@@ -38,3 +38,8 @@ Route::get('/', function()
     return Redirect::to('https://ahri.tw/en');	
 });
 
+
+
+Route::get('test', 'LiveGameController@GetNewNames');
+
+Route::get('remove', 'LiveGameController@Remove');

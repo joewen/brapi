@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Controller;
 use App\LoLApis\BaronClientApi;
+use App\LiveGame\LiveGameManager;
 use Request;
 use App;
 
@@ -13,6 +14,8 @@ class GameInfoController extends Controller {
 		$game = BaronClientApi::GetCurrentGameByName($platform, $name);
 		if($game != false)
 		{
+			$lgm = new LiveGameManager;
+			$lgm->CacheLiveGame($game);
 			return json_encode($game , JSON_NUMERIC_CHECK);
 		}
 		App::abort(404);
