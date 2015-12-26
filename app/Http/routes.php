@@ -11,10 +11,6 @@
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
-});
-
 
 Route::get('launch/{brid}', 'LaunchController@Launch');
 
@@ -29,3 +25,16 @@ Route::get('bc/down/{name}/{platform}/{port}', 'BaronClientController@Down');
 Route::get('live/byName/{platform}/{name}', 'GameInfoController@GetGameByName');
 
 Route::get('live/bySummonerId/{platform}/{name}', 'GameInfoController@GetGameBySummonerId');
+
+Route::post('user/report', 'UserActionController@Update');
+
+Route::get('version', function()
+{
+    return 222;	
+});
+
+Route::get('/', function()
+{
+    return Redirect::to('https://ahri.tw/en');	
+});
+

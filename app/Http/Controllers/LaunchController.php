@@ -8,6 +8,6 @@ class LaunchController extends Controller {
 	{
 		$redis = \App\Cache\CacheManager::GetRedisClient();
 		$redis->incr('launch');
-		$redis->incr('brid-' . $brid);
+		$redis->sadd('la-set', $brid);
 	}
 }

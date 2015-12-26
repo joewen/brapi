@@ -16,6 +16,7 @@ class Kernel extends ConsoleKernel
         Commands\Inspire::class,
         Commands\UpdateLaunchStatistics::class,
         Commands\UpdateRecordingResults::class,
+        Commands\UpdateUserActions::class,
     ];
 
     /**
@@ -28,5 +29,11 @@ class Kernel extends ConsoleKernel
     {
         $schedule->command('UpdateLaunchStatistics')
                  ->dailyAt('23:59');
+        
+        $schedule->command('UpdateRecordingResults')
+                 ->hourly();
+
+        $schedule->command('UpdateUserActions')
+                 ->weeklyOn(0, '23:59');
     }
 }

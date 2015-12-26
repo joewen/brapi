@@ -35,20 +35,14 @@ class UpdateLaunchStatistics extends Command
 
         LaunchStatistic::where('date', $dateStr)->delete();
 
+        $launchSetKey = 'la-set';
+
         $ls = new LaunchStatistic;
         $ls->date = $dateStr;
         $ls->count = $redis->getset('launch',0);
-        $users = $redis->keys('brid-*');
-        $ls->count_distinct = count($users);
+        $ls->count_distinct = $redis->scard($launchSetKey);
         $ls->save();
 
-
-
-        $pipe = $redis->pipeline();
-        foreach ($users as $key) {
-            $redis->del($key);
-        }
-        $res = $pipe->exec();
-
+        $redis->del($launchSetKey);
     }
 }

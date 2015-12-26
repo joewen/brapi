@@ -25,7 +25,7 @@ class BaronClientController extends Controller {
 	
 	public function Update($name, $platform, $port)
 	{
-		$this->redis->setex($this->GetKey($platform), self::$TTLSec, 'http://' $this->GetAddressByIPAndPort(Request::getClientIp(true) . '/', $port));
+		$this->redis->setex($this->GetKey($platform), self::$TTLSec, 'http://' . $this->GetAddressByIPAndPort(Request::getClientIp(true) , $port) . '/');
 	}
 
 	public function Down($name, $platform, $port)
