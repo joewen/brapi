@@ -26,20 +26,18 @@ Route::get('live/byName/{platform}/{name}', 'GameInfoController@GetGameByName');
 
 Route::get('live/bySummonerId/{platform}/{name}', 'GameInfoController@GetGameBySummonerId');
 
+Route::get('live/{platform}', 'LiveGameController@GetGames');
+
+Route::get('live/byChampionId/{platform}/{championId}', 'LiveGameController@GetGamesByChampionId');
+
 Route::post('user/report', 'UserActionController@Update');
 
 Route::get('version', function()
 {
-    return 222;	
+    return 223;	
 });
 
 Route::get('/', function()
 {
     return Redirect::to('https://ahri.tw/en');	
 });
-
-
-
-Route::get('live/{platform}', 'LiveGameController@GetGames');
-
-Route::get('live/byChampionId/{platform}/{championId}', 'LiveGameController@GetGamesByChampionId');
