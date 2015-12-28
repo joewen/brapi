@@ -6,16 +6,22 @@ use App\LiveGame\LiveGameManager;
 class LiveGameController extends Controller {
 
 
-	public function GetNewNames()
+	public function GetGames($platform)
 	{
-		$lgm = new LiveGameManager;
-		return json_encode($lgm->GetNewGames('TW', 10));
+		$lgm = new LiveGameManager($platform);
+		return json_encode($lgm->GetGames(10));
+	}
+
+	public function GetGamesByChampionId($platform, $championId)
+	{
+		$lgm = new LiveGameManager($platform);
+		return json_encode($lgm->GetGamesByChampionId($championId, 10));
 	}
 
 	public function Remove()
 	{
-		$lgm = new LiveGameManager;
-		return json_encode($lgm->RemoveOldGames('TW'));
+		$lgm = new LiveGameManager('TW');
+		return json_encode($lgm->RemoveOldGames());
 	}
 
 }

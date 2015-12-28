@@ -4,98 +4,113 @@
 class LiveGameManager {
 
 	private $redis;
+   private $platform;
 
-	  function __construct() 
+	  public function __construct($platform) 
 	  {
-		    $this->redis = \App\Cache\CacheManager::GetRedisClient();
+		    $this->platform = $platform;
+          $this->redis = \App\Cache\CacheManager::GetRedisClient();
    	}
 
-      private function GetChampionKey($platform, $championId)
+      private function GetChampionKey($championId)
       {
-         return "lg-$platform-$championId";
+         return $this->GetPlatformGamesKey() . "-" . $championId;
       }
 
-      private function GetChampionCountKey($platform, $championId)
+      private function GetChampionCountKey($championId)
       {
-         return "lg-$platform-$championId-count";
+         return $this->GetChampionKey($championId) . "-count";
       }
 
-      private function GetPlatformGamesKey($platform)
+      private function GetPlatformGamesKey()
       {
-         return "lg-$platform";
+         return "lg-" . $this->platform;
       }
 
-      private function GetPlatformGamesCountKey($platform)
+      private function GetPlatformGamesCountKey()
       {
-         return "lg-$platform-count";
+         return $this->GetPlatformGamesKey() . '-count';
       }
 
-      private function GetChampionSetKey($platform)
+      private function GetChampionSetKey()
       {
-         return "lg-set-$platform-champion";
+         return "lg-" . $this->platform .  "-championSet";
       }
 
    	public function CacheLiveGame($game)
    	{   		
-   		$platform = $game->platform_id;
    		$gameId = $game->game_id;
 
-   		$redisKey = "lg-$platform-$gameId";
+   		$gameKey = "lg-" . $this->platform . "-$gameId";
 
 
-   		if($this->redis->exists($redisKey))
+   		if($this->redis->exists($gameKey))
    		{
    			return;
    		}
 
    		$gameInJson = json_encode($game, JSON_NUMERIC_CHECK);
-   		$this->redis->set($redisKey, $gameInJson); 
-   		$this->redis->lpush($this->GetPlatformGamesKey($platform), $redisKey); 
-         $this->redis->incr($this->GetPlatformGamesCountKey($platform));
+   		$this->redis->set($gameKey, $gameInJson); 
+   		$this->redis->lpush($this->GetPlatformGamesKey(), $gameKey); 
+         $this->redis->incr($this->GetPlatformGamesCountKey());
 
    		$players = array_merge($game->teamOne, $game->teamTwo);
    		foreach ($players as $value) {
    			$cid = $value->championId;
-   			$redisKey = $this->GetChampionKey($platform, $cid);
-            $this->redis->sadd($this->GetChampionSetKey($platform), $redisKey);
-   			$this->redis->lpush($redisKey, $redisKey); 
-   			$champCountKey = $this->GetChampionCountKey($platform, $cid);
+   			$redisKey = $this->GetChampionKey($cid);
+            $this->redis->sadd($this->GetChampionSetKey(), $redisKey);
+   			$this->redis->lpush($redisKey, $gameKey); 
+   			$champCountKey = $this->GetChampionCountKey($cid);
    			$this->redis->incr($champCountKey);
    		}
    	}
 
 
-   	public function GetNewGames($platform,$count)
+   	public function GetGames($count)
    	{   		
-   		$redisKey = $this->GetPlatformGamesKey($platform);
-   		$gameJsons = $this->redis->lrange($redisKey, 0, $count - 1);
-   		$games = array();
-
-   		foreach ($gameJsons as $value) {
-   			array_push($games, json_decode($this->redis->get($value)));
-   		}
-   		return $games;
+   		$redisKey = $this->GetPlatformGamesKey();
+   		return $this->GetGamesFromQueue($redisKey, $count);
    	}
 
+      public function GetGamesByChampionId($championId, $count)
+      {        
+         $redisKey = $this->GetChampionKey($championId);
+         return $this->GetGamesFromQueue($redisKey, $count);
+      }
 
-      private function RemoveOldChampionListItem($platform)
+      private function GetGamesFromQueue($redisKey, $count)
       {
-         $champSet = $this->redis->smembers($this->GetChampionSetKey($platform));
+         $gameJsons = $this->redis->lrange($redisKey, 0, $count - 1);
+         $games = array();
+
+         foreach ($gameJsons as $value) {
+            array_push($games, json_decode($this->redis->get($value)));
+         }
+         return $games;
+      }
+
+
+      private function RemoveOldChampionListItem()
+      { 
+         //移除英雄序列中的過時對戰，先找出所有的英雄序列
+         $champSet = $this->redis->smembers($this->GetChampionSetKey());   
+
          foreach ($champSet as $value) {
+            //計算總共有多少過時的對戰要被移除
             $cCount = $this->redis->getset("$value-count", 0);
             $toRemove = $this->redis->lrange($value, $cCount , -1);
             $this->redis->ltrim($value, 0, $cCount - 1);
          }
       }
 
-      public function RemoveOldGames($platform)
+      public function RemoveOldGames()
       {       
-         $this->RemoveOldChampionListItem($platform);
+         $this->RemoveOldChampionListItem();
 
-         $platformCountKey = $this->GetPlatformGamesCountKey($platform);
+         $platformCountKey = $this->GetPlatformGamesCountKey();
          $pCount = $this->redis->getset($platformCountKey, 0);
 
-         $platformKey = $this->GetPlatformGamesKey($platform);
+         $platformKey = $this->GetPlatformGamesKey();
          $toRemove = $this->redis->lrange($platformKey, $pCount , -1);
          $this->redis->ltrim($platformKey, 0, $pCount - 1);
 

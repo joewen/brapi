@@ -40,6 +40,6 @@ Route::get('/', function()
 
 
 
-Route::get('test', 'LiveGameController@GetNewNames');
+Route::get('live/{platform}', 'LiveGameController@GetGames');
 
-Route::get('remove', 'LiveGameController@Remove');
+Route::get('live/byChampionId/{platform}/{championId}', 'LiveGameController@GetGamesByChampionId');
