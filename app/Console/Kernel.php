@@ -17,6 +17,7 @@ class Kernel extends ConsoleKernel
         Commands\UpdateLaunchStatistics::class,
         Commands\UpdateRecordingResults::class,
         Commands\UpdateUserActions::class,
+        Commands\RemoveOldLiveGames::class,
     ];
 
     /**
@@ -35,5 +36,8 @@ class Kernel extends ConsoleKernel
 
         $schedule->command('UpdateUserActions')
                  ->weeklyOn(0, '23:59');
+
+        $schedule->command('RemoveOldLiveGames')
+                 ->everyTenMinutes();
     }
 }
