@@ -102,7 +102,7 @@ class LiveGameManager {
             $cCount = $this->redis->getset("$value-count", 0);
             $toRemove = $this->redis->lrange($value, $cCount , -1);
             $this->redis->ltrim($value, 0, $cCount - 1);
-            $remainCount = llen($value);
+            $remainCount = $this->redis->llen($value);
             echo "Removing queue $value, remove $cCount, remain $remainCount";
          }
       }
@@ -119,7 +119,7 @@ class LiveGameManager {
          $toRemove = $this->redis->lrange($platformKey, $pCount , -1);
          $this->redis->ltrim($platformKey, 0, $pCount - 1);
 
-         $remainCount = llen($platformKey);
+         $remainCount = $this->redis->llen($platformKey);
          echo "Remove $pCount, remain $remainCount";
 
          foreach ($toRemove as $value) {
