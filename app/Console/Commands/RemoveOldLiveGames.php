@@ -30,5 +30,11 @@ class RemoveOldLiveGames extends Command
     {
         $lgm = new LiveGameManager('TW');
         $lgm->RemoveOldGames();
+
+        $lgm = new LiveGameManager('SG');
+        $lgm->RemoveOldGames();
+
+        $lgm = new LiveGameManager('ID1');
+        $lgm->RemoveOldGames();
     }
 }
