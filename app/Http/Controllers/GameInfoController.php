@@ -14,8 +14,14 @@ class GameInfoController extends Controller {
 		$game = BaronClientApi::GetCurrentGameByName($platform, $name);
 		if($game != false)
 		{
-			$lgm = new LiveGameManager($platform);
-			$lgm->CacheLiveGame($game);
+			try
+			{
+				$lgm = new LiveGameManager($platform);
+				$lgm->CacheLiveGame($game);
+			}
+			catch(\Exception $e)
+			{}
+
 			return json_encode($game , JSON_NUMERIC_CHECK);
 		}
 		App::abort(404);
