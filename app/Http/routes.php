@@ -26,9 +26,9 @@ Route::get('live/byName/{platform}/{name}', 'GameInfoController@GetGameByName');
 
 Route::get('live/bySummonerId/{platform}/{name}', 'GameInfoController@GetGameBySummonerId');
 
-Route::get('live/{platform}', 'LiveGameController@GetGames');
+Route::get('live/{platform}/{start}', 'LiveGameController@GetGames');
 
-Route::get('live/byChampionId/{platform}/{championId}', 'LiveGameController@GetGamesByChampionId');
+Route::get('live/byChampionId/{platform}/{championId}/{start}', 'LiveGameController@GetGamesByChampionId');
 
 Route::post('user/report', 'UserActionController@Update');
 
