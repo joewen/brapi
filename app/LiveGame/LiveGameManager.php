@@ -63,21 +63,21 @@ class LiveGameManager {
 	}
 
 
-	public function GetGames($start, $count)
+	public function GetGames()
 	{   		
 		$redisKey = $this->GetPlatformGamesKey();
-		return $this->GetGamesFromQueue($redisKey,$start , $count);
+		return $this->GetGamesFromQueue($redisKey);
 	}
 
-	public function GetGamesByChampionId($championId, $start, $count)
+	public function GetGamesByChampionId($championId)
 	{        
 		$redisKey = $this->GetChampionKey($championId);
-		return $this->GetGamesFromQueue($redisKey, $start, $count);
+		return $this->GetGamesFromQueue($redisKey);
 	}
 
-	private function GetGamesFromQueue($redisKey,$start, $count)
+	private function GetGamesFromQueue($redisKey)
 	{
-		$gameJsons = $this->redis->lrange($redisKey, $start, $start + $count - 1);
+		$gameJsons = $this->redis->lrange($redisKey, 0, -1);
 		$games = array();
 
 		foreach ($gameJsons as $value) {
