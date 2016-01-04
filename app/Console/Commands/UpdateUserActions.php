@@ -38,7 +38,7 @@ class UpdateUserActions extends Command
             {
                 $ua = new UserAction;
                 $ua->action = substr($key, 3);
-                $ua->count = $redis->getset($key, 0);
+                $ua->count = $count;
                 $ua->save();
             }
         }
