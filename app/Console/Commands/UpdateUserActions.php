@@ -32,8 +32,6 @@ class UpdateUserActions extends Command
 
         $actions = $redis->keys('ua-*');
 
-        $pipe = $redis->pipeline();
-
         foreach ($actions as $key) {
             $count = $redis->getset($key, 0);
             if($count != 0)
@@ -44,7 +42,6 @@ class UpdateUserActions extends Command
                 $ua->save();
             }
         }
-        $res = $pipe->exec();
 
     }
 }
