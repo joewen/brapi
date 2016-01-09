@@ -32,6 +32,10 @@ Route::get('live/byChampionId/{platform}/{championId}', 'LiveGameController@GetG
 
 Route::post('user/report', 'UserActionController@Update');
 
+Route::post('report/crash/{deviceId}', 'ReportController@CrashReport');
+
+Route::post('report/bug/{deviceId}', 'ReportController@UserReport');
+
 Route::get('version', function()
 {
     return 223;	
