@@ -38,7 +38,7 @@ Route::post('report/bug/{deviceId}', 'ReportController@UserReport');
 
 Route::get('version', function()
 {
-    return 223;	
+    return 224;	
 });
 
 Route::get('/', function()
