@@ -36,6 +36,8 @@ Route::post('report/crash/{deviceId}', 'ReportController@CrashReport');
 
 Route::post('report/bug/{deviceId}', 'ReportController@UserReport');
 
+Route::post('game/end/{platform}/{gameId}', 'EndGameController@NewEndedGame');
+
 Route::get('version', function()
 {
     return 225;	
