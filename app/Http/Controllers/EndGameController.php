@@ -22,8 +22,6 @@ class EndGameController extends Controller {
     $content = curl_exec($ch);
     $httpcode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
     curl_close ($ch);
-
-    return ApiResponseController::NormalResponse();
   }
 
 }
