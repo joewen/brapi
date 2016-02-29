@@ -66,7 +66,7 @@ class UpdateRecordingResults extends Command
             $redis->del($successKey);
             $redis->del($failKey);
 
-            $slackMsg = $slackMsg . sprintf("[%-3s]        成功 % 5d        失敗 % 5d        成功率 %.2f %%",$p, $success, $fail,  (floatval($success) / (floatval($success) + floatval($fail)) * 100)) . PHP_EOL;
+            $slackMsg = $slackMsg . sprintf("[%~-3s]        成功 % 5d        失敗 % 5d        成功率 %.2f %%",$p, $success, $fail,  (floatval($success) / (floatval($success) + floatval($fail)) * 100)) . PHP_EOL;
 
         }
 
