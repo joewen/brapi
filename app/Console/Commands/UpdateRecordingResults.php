@@ -45,22 +45,49 @@ class UpdateRecordingResults extends Command
             }
         }
 
+        $slackMsg = 'BaronReplays 近一小時錄製成功率 '. PHP_EOL . date('F jS, Y H:i:s') . PHP_EOL;
         foreach ($platforms as $p) {
             $result = new RecordingResult;
             $result->platform = $p;
             $successKey = $prefix . $p . '-s';
-            $result->success = $redis->get($successKey);
-            if($result->success == null)
-                $result->success = 0;
+            $success = $redis->get($successKey);
+            if($success == null)
+               $success = 0;
+            $result->success = $success;
+
             $failKey = $prefix . $p . '-f';
-            $result->fail = $redis->get($failKey);
-            if($result->fail == null)
-                $result->fail = 0;
+            $fail = $redis->get($failKey);
+            if($fail == null)
+               $fail = 0;
+            $result->fail = $fail;
+
             $result->save();
 
             $redis->del($successKey);
             $redis->del($failKey);
+
+            $slackMsg = $slackMsg . "[$p] 成功 " . sprintf("%' 5d", $success) . " 失敗 " . sprintf("%' 5d", $fail) . "        成功率 " . (floatval($success) / (floatval($success) + floatval($fail)) * 100) . '%' . PHP_EOL;
+
         }
 
+        $this->SendToSlack($slackMsg);
+    }
+
+
+    private function SendToSlack($msg)
+    {
+
+        $msgObj = array('text' => $msg);
+        $msgJson = json_encode($msgObj);
+
+        $url = 'https://hooks.slack.com/services/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';
+        $ch = curl_init($url);
+        curl_setopt($ch, CURLOPT_POST, 1);
+        curl_setopt($ch, CURLOPT_POSTFIELDS, $msgJson);
+        curl_setopt($ch, CURLOPT_TIMEOUT, 10); //timeout in seconds
+        curl_exec($ch);
+        $httpcode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+        curl_close ($ch);
+        echo $httpcode ;
     }
 }
