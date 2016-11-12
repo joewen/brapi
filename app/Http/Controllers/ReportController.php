@@ -22,6 +22,7 @@ class ReportController extends Controller {
 
 	private function WriteToDB($type)
 	{
+		/*
 		$request = Request::instance();
 
     	$report = new BugReport;
@@ -29,5 +30,6 @@ class ReportController extends Controller {
     	$report->device_id = $this->deviceId;
     	$report->content = $request->getContent();
     	$report->save();
+    	*/
 	}
 }
