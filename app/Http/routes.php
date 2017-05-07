@@ -40,7 +40,7 @@ Route::post('game/end/{platform}/{gameId}', 'EndGameController@NewEndedGame');
 
 Route::get('version', function()
 {
-    return 236;	
+    return 237;	
 });
 
 Route::get('/', function()
